@@ -86,6 +86,26 @@ describe PullRequest, '#synchronize?' do
   end
 end
 
+describe PullRequest, '#comments_on' do
+  it 'returns existing comments for a given line in a given file' do
+    github_token = 'token'
+    stub_pull_request_comments_request('org/repo', 4, 'houndgithubtoken')
+    payload = double(
+      :payload,
+      full_repo_name: 'org/repo',
+      number: 4,
+      head_sha: 'abc123'
+    )
+    pull_request = PullRequest.new(payload, github_token)
+    line_number = 7
+    filename = 'spec/models/style_guide_spec.rb'
+
+    comments = pull_request.comments_on(line_number, filename)
+
+    expect(comments).to have(4).items
+  end
+end
+
 describe PullRequest, '#head_commit_files' do
   it 'returns modified files in the commit' do
     github_api = double(:github_api, commit_files: [double, double])

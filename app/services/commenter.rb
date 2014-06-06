@@ -5,13 +5,24 @@ class Commenter
         line = line_violation.line
 
         if pull_request.opened? || pull_request.head_includes?(line)
-          pull_request.add_comment(
-            file_violation.filename,
-            line.patch_position,
-            line_violation.messages.join('<br>')
+          unless violation_previously_reported?(
+            line_violation.messages,
+            pull_request.comments_on(line.line_number, file_violation.filename)
           )
+            pull_request.add_comment(
+              file_violation.filename,
+              line.patch_position,
+              line_violation.messages.join('<br>')
+            )
+          end
         end
       end
     end
+  end
+
+  private
+
+  def violation_previously_reported?(violation_messages, existing_comments)
+    (existing_comments.map(&:body) & violation_messages).any?
   end
 end
