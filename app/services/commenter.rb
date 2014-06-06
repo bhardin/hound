@@ -18,8 +18,6 @@ class Commenter
 
   private
 
-  attr_reader :pull_request
-
   def commenting_policy
     CommentingPolicy.new
   end
