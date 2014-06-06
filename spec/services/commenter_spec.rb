@@ -1,8 +1,10 @@
 require 'fast_spec_helper'
 require 'app/services/commenter'
+require 'app/models/comment'
 require 'app/models/file_violation'
 require 'app/models/line_violation'
 require 'app/models/line'
+require 'app/policies/commenting_policy'
 
 describe Commenter do
   describe '#comment_on_violations' do
@@ -127,7 +129,7 @@ describe Commenter do
       end
     end
 
-    context 'when a comment reporting the violation exists' do
+    context 'when comment is not permitted' do
       it 'does not comment' do
         comment_body = 'Trailing whitespace'
         comment = double(:comment, body: comment_body)
@@ -139,10 +141,9 @@ describe Commenter do
           head_includes?: true,
           comments_on: [comment]
         )
-        line_number = 10
         line = double(
           :line,
-          line_number: line_number,
+          line_number: 10,
           patch_position: 2
         )
         line_violation = double(
@@ -155,6 +156,8 @@ describe Commenter do
           filename: 'test.rb',
           line_violations: [line_violation]
         )
+        commenting_policy = double(:commenting_policy, comment_permitted?: false)
+        allow(CommentingPolicy).to receive(:new).and_return(commenting_policy)
         commenter = Commenter.new(pull_request)
 
         commenter.comment_on_violations([file_violation])
