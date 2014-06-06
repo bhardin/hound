@@ -18,9 +18,9 @@ class PullRequest
     end
   end
 
-  def comments_on(line_number, filename)
+  def comments_on_line(line_number, filename)
     comments.select do |comment|
-      comment[:path] == filename && comment[:position] == line_number
+      comment.position == line_number && comment.path == filename
     end
   end
 

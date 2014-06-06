@@ -86,23 +86,25 @@ describe PullRequest, '#synchronize?' do
   end
 end
 
-describe PullRequest, '#comments_on' do
+describe PullRequest, '#comments_on_line' do
   it 'returns existing comments for a given line in a given file' do
-    github_token = 'token'
-    stub_pull_request_comments_request('org/repo', 4, 'houndgithubtoken')
+    github_token = 'githubtoken'
     payload = double(
       :payload,
       full_repo_name: 'org/repo',
       number: 4,
       head_sha: 'abc123'
     )
-    pull_request = PullRequest.new(payload, github_token)
     line_number = 7
     filename = 'spec/models/style_guide_spec.rb'
+    comment = double(:comment, position: line_number, path: filename)
+    github_api = double(:github_api, pull_request_comments: [comment])
+    GithubApi.stub(new: github_api)
+    pull_request = PullRequest.new(payload, github_token)
 
-    comments = pull_request.comments_on(line_number, filename)
+    comments = pull_request.comments_on_line(line_number, filename)
 
-    expect(comments).to have(4).items
+    expect(comments).to have(1).item
   end
 end
 

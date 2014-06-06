@@ -129,6 +129,47 @@ describe Commenter do
       end
     end
 
+    context 'when comment is permitted' do
+      it 'comments on the violations at the correct patch position' do
+        comment_body = 'Trailing whitespace'
+        comment = double(:comment, body: comment_body)
+        pull_request = double(
+          :pull_request,
+          synchronize?: true,
+          opened?: false,
+          add_comment: true,
+          head_includes?: true,
+          comments_on: [comment]
+        )
+        line = double(
+          :line,
+          line_number: 10,
+          patch_position: 2
+        )
+        line_violation = double(
+          :line_violation,
+          line: line,
+          messages: [comment_body]
+        )
+        file_violation = double(
+          :file_violation,
+          filename: 'test.rb',
+          line_violations: [line_violation]
+        )
+        commenting_policy = double(:commenting_policy, comment_permitted?: true)
+        allow(CommentingPolicy).to receive(:new).and_return(commenting_policy)
+        commenter = Commenter.new(pull_request)
+
+        commenter.comment_on_violations([file_violation])
+
+        expect(pull_request).to have_received(:add_comment).with(
+          file_violation.filename,
+          line.patch_position,
+          line_violation.messages.first
+        )
+      end
+    end
+
     context 'when comment is not permitted' do
       it 'does not comment' do
         comment_body = 'Trailing whitespace'
