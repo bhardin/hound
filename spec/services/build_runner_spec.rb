@@ -20,14 +20,13 @@ describe BuildRunner, '#run' do
       build_runner = BuildRunner.new(stubbed_payload(repo))
       commenter = stubbed_commenter
       style_checker = stubbed_style_checker_with_violations
-      pull_request = stubbed_pull_request
+      stubbed_pull_request
       stubbed_file_collection
 
       build_runner.run
 
       expect(commenter).to have_received(:comment_on_violations).with(
-        style_checker.violations,
-        pull_request
+        style_checker.violations
       )
     end
 
