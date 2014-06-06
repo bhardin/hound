@@ -3,8 +3,9 @@ class Commenter
     file_violations.each do |file_violation|
       file_violation.line_violations.each do |line_violation|
         line = line_violation.line
+        comment = Comment.new(line: line)
 
-        if pull_request.opened? || pull_request.head_includes?(line)
+        if commenting_policy.comment_permitted?(pull_request, comment)
           pull_request.add_comment(
             file_violation.filename,
             line.patch_position,
@@ -13,5 +14,13 @@ class Commenter
         end
       end
     end
+  end
+
+  private
+
+  attr_reader :pull_request
+
+  def commenting_policy
+    CommentingPolicy.new
   end
 end
