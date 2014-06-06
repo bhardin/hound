@@ -7,7 +7,7 @@ describe CommentingPolicy, '#comment_permitted?' do
         :pull_request,
         opened?: true,
         head_includes?: false,
-        comments_on: []
+        comments_on_line: []
       )
       position = 1
       line = double(:line, line_number: position)
@@ -33,7 +33,7 @@ describe CommentingPolicy, '#comment_permitted?' do
         :pull_request,
         opened?: false,
         head_includes?: true,
-        comments_on: []
+        comments_on_line: []
       )
       position = 1
       line = double(:line, line_number: position)
@@ -77,7 +77,7 @@ describe CommentingPolicy, '#comment_permitted?' do
         :pull_request,
         opened?: false,
         head_includes?: true,
-        comments_on: [existing_comment]
+        comments_on_line: [existing_comment]
       )
       commenting_policy = CommentingPolicy.new
 
@@ -104,7 +104,7 @@ describe CommentingPolicy, '#comment_permitted?' do
         :pull_request,
         opened?: false,
         head_includes?: true,
-        comments_on: [comment]
+        comments_on_line: [comment]
       )
       commenting_policy = CommentingPolicy.new
 

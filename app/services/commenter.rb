@@ -1,9 +1,5 @@
 class Commenter
-  def initialize(pull_request)
-    @pull_request = pull_request
-  end
-
-  def comment_on_violations(file_violations)
+  def comment_on_violations(file_violations, pull_request)
     file_violations.each do |file_violation|
       file_violation.line_violations.each do |line_violation|
         line = line_violation.line
@@ -26,8 +22,6 @@ class Commenter
   end
 
   private
-
-  attr_reader :pull_request
 
   def commenting_policy
     CommentingPolicy.new

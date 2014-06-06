@@ -8,7 +8,7 @@ class BuildRunner
   def run
     if repo && relevant_pull_request
       repo.builds.create!(violations: violations)
-      commenter.comment_on_violations(violations)
+      commenter.comment_on_violations(violations, pull_request)
     end
   end
 
@@ -32,7 +32,7 @@ class BuildRunner
   end
 
   def commenter
-    Commenter.new(pull_request)
+    Commenter.new
   end
 
   def pull_request

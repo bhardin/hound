@@ -17,7 +17,7 @@ describe Commenter do
             opened?: true,
             add_comment: true,
             head_includes?: false,
-            comments_on: [comment]
+            comments_on_line: [comment]
           )
           line_number = 10
           line = double(
@@ -35,9 +35,9 @@ describe Commenter do
             filename: 'test.rb',
             line_violations: [line_violation]
           )
-          commenter = Commenter.new(pull_request)
+          commenter = Commenter.new
 
-          commenter.comment_on_violations([file_violation])
+          commenter.comment_on_violations([file_violation], pull_request)
 
           expect(pull_request).to have_received(:add_comment).with(
             file_violation.filename,
@@ -57,7 +57,7 @@ describe Commenter do
               opened?: false,
               add_comment: true,
               head_includes?: true,
-              comments_on: [comment]
+              comments_on_line: [comment]
             )
             line_number = 10
             line = double(
@@ -75,9 +75,9 @@ describe Commenter do
               filename: 'test.rb',
               line_violations: [line_violation]
             )
-            commenter = Commenter.new(pull_request)
+            commenter = Commenter.new
 
-            commenter.comment_on_violations([file_violation])
+            commenter.comment_on_violations([file_violation], pull_request)
 
             expect(pull_request).to have_received(:add_comment)
           end
@@ -108,9 +108,9 @@ describe Commenter do
               filename: 'test.rb',
               line_violations: [line_violation]
             )
-            commenter = Commenter.new(pull_request)
+            commenter = Commenter.new
 
-            commenter.comment_on_violations([file_violation])
+            commenter.comment_on_violations([file_violation], pull_request)
 
             expect(pull_request).not_to have_received(:add_comment)
           end
@@ -121,9 +121,9 @@ describe Commenter do
     context 'with no violations' do
       it 'does not comment' do
         pull_request = double(:pull_request).as_null_object
-        commenter = Commenter.new(pull_request)
+        commenter = Commenter.new
 
-        commenter.comment_on_violations([])
+        commenter.comment_on_violations([], pull_request)
 
         expect(pull_request).not_to have_received(:add_comment)
       end
@@ -139,7 +139,7 @@ describe Commenter do
           opened?: false,
           add_comment: true,
           head_includes?: true,
-          comments_on: [comment]
+          comments_on_line: [comment]
         )
         line = double(
           :line,
@@ -158,9 +158,9 @@ describe Commenter do
         )
         commenting_policy = double(:commenting_policy, comment_permitted?: true)
         allow(CommentingPolicy).to receive(:new).and_return(commenting_policy)
-        commenter = Commenter.new(pull_request)
+        commenter = Commenter.new
 
-        commenter.comment_on_violations([file_violation])
+        commenter.comment_on_violations([file_violation], pull_request)
 
         expect(pull_request).to have_received(:add_comment).with(
           file_violation.filename,
@@ -180,7 +180,7 @@ describe Commenter do
           opened?: false,
           add_comment: true,
           head_includes?: true,
-          comments_on: [comment]
+          comments_on_line: [comment]
         )
         line = double(
           :line,
@@ -199,9 +199,9 @@ describe Commenter do
         )
         commenting_policy = double(:commenting_policy, comment_permitted?: false)
         allow(CommentingPolicy).to receive(:new).and_return(commenting_policy)
-        commenter = Commenter.new(pull_request)
+        commenter = Commenter.new
 
-        commenter.comment_on_violations([file_violation])
+        commenter.comment_on_violations([file_violation], pull_request)
 
         expect(pull_request).not_to have_received(:add_comment)
       end
