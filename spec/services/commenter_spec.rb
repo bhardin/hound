@@ -155,9 +155,9 @@ describe Commenter do
           filename: 'test.rb',
           line_violations: [line_violation]
         )
-        commenter = Commenter.new
+        commenter = Commenter.new(pull_request)
 
-        commenter.comment_on_violations([file_violation], pull_request)
+        commenter.comment_on_violations([file_violation])
 
         expect(pull_request).not_to have_received(:add_comment)
       end
