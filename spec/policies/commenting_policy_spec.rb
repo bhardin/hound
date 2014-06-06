@@ -19,9 +19,14 @@ describe CommentingPolicy, '#comment_permitted?' do
         violation_messages: [],
         path: 'test.rb'
       )
+      existing_comments = []
       commenting_policy = CommentingPolicy.new
 
-      result = commenting_policy.comment_permitted?(pull_request, comment)
+      result = commenting_policy.comment_permitted?(
+        pull_request,
+        existing_comments,
+        comment
+      )
 
       expect(result).to be_true
     end
@@ -45,9 +50,14 @@ describe CommentingPolicy, '#comment_permitted?' do
         violation_messages: [],
         path: 'test.rb'
       )
+      existing_comments = []
       commenting_policy = CommentingPolicy.new
 
-      result = commenting_policy.comment_permitted?(pull_request, comment)
+      result = commenting_policy.comment_permitted?(
+        pull_request,
+        existing_comments,
+        comment
+      )
 
       expect(result).to be_true
     end
@@ -79,9 +89,14 @@ describe CommentingPolicy, '#comment_permitted?' do
         head_includes?: true,
         comments_on_line: [existing_comment]
       )
+      existing_comments = []
       commenting_policy = CommentingPolicy.new
 
-      result = commenting_policy.comment_permitted?(pull_request, new_comment)
+      result = commenting_policy.comment_permitted?(
+        pull_request,
+        existing_comments,
+        new_comment
+      )
 
       expect(result).to be_true
     end
@@ -104,11 +119,15 @@ describe CommentingPolicy, '#comment_permitted?' do
         :pull_request,
         opened?: false,
         head_includes?: true,
-        comments_on_line: [comment]
       )
+      existing_comments = [comment]
       commenting_policy = CommentingPolicy.new
 
-      result = commenting_policy.comment_permitted?(pull_request, comment)
+      result = commenting_policy.comment_permitted?(
+        pull_request,
+        existing_comments,
+        comment
+      )
 
       expect(result).to be_false
     end

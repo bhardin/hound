@@ -11,15 +11,15 @@ describe Commenter do
     context 'with violations' do
       context 'when pull request is opened' do
         it 'comments on the violations at the correct patch position' do
-          comment = double(:comment, body: 'Extra newline')
+          line_number = 10
+          comment = double(:comment, body: 'Extra newline', position: line_number)
           pull_request = double(
             :pull_request,
             opened?: true,
             add_comment: true,
             head_includes?: false,
-            comments_on_line: [comment]
+            comments: [comment]
           )
-          line_number = 10
           line = double(
             :line,
             line_number: line_number,
@@ -50,16 +50,20 @@ describe Commenter do
       context 'when pull request is synchronized' do
         context 'when the violation is in the last commit' do
           it 'comments on the violations at the correct patch position' do
-            comment = double(:comment, body: 'Extra newline')
+            line_number = 10
+            comment = double(
+              :comment,
+              body: 'Extra newline',
+              position: line_number
+            )
             pull_request = double(
               :pull_request,
               synchronize?: true,
               opened?: false,
               add_comment: true,
               head_includes?: true,
-              comments_on_line: [comment]
+              comments: [comment]
             )
-            line_number = 10
             line = double(
               :line,
               line_number: line_number,
@@ -90,7 +94,8 @@ describe Commenter do
               synchronize?: true,
               opened?: false,
               add_comment: true,
-              head_includes?: false
+              head_includes?: false,
+              comments: []
             )
             line_number = 10
             line = double(
@@ -139,7 +144,7 @@ describe Commenter do
           opened?: false,
           add_comment: true,
           head_includes?: true,
-          comments_on_line: [comment]
+          comments: [comment]
         )
         line = double(
           :line,
@@ -180,7 +185,7 @@ describe Commenter do
           opened?: false,
           add_comment: true,
           head_includes?: true,
-          comments_on_line: [comment]
+          comments: [comment]
         )
         line = double(
           :line,

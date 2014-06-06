@@ -18,10 +18,9 @@ class PullRequest
     end
   end
 
-  def comments_on_line(line_number, filename)
-    comments.select do |comment|
-      comment.position == line_number && comment.path == filename
-    end
+  def comments
+    github = GithubApi.new(ENV['HOUND_GITHUB_TOKEN'])
+    github.pull_request_comments(full_repo_name, number)
   end
 
   def pull_request_files
@@ -66,11 +65,6 @@ class PullRequest
 
   def api
     @api ||= GithubApi.new(@github_token)
-  end
-
-  def comments
-    github = GithubApi.new(ENV['HOUND_GITHUB_TOKEN'])
-    github.pull_request_comments(full_repo_name, number)
   end
 
   def full_repo_name

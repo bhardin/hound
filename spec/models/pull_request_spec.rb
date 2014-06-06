@@ -86,8 +86,8 @@ describe PullRequest, '#synchronize?' do
   end
 end
 
-describe PullRequest, '#comments_on_line' do
-  it 'returns existing comments for a given line in a given file' do
+describe PullRequest, '#comments' do
+  it 'returns comments on pull request' do
     github_token = 'githubtoken'
     payload = double(
       :payload,
@@ -102,9 +102,10 @@ describe PullRequest, '#comments_on_line' do
     GithubApi.stub(new: github_api)
     pull_request = PullRequest.new(payload, github_token)
 
-    comments = pull_request.comments_on_line(line_number, filename)
+    comments = pull_request.comments
 
     expect(comments).to have(1).item
+    expect(comments.first).to eq comment
   end
 end
 
